@@ -254,6 +254,33 @@ You can find some sample scripts on the samples folder, including a basic scrapi
     >> page.links[4]
     => "/plans-and-pricing"
 
+## Experimental Typhoeus support
+
+There is experimental support for using Typhoeus instead of Net::HTTP. The main motivation was to
+support cookies while following redirects. See discussion in #60 to see examples of
+URLs where this matters.
+
+An additional benefit is native support for redirect following, making the
+[open_uri_redirections gem](https://github.com/jaimeiniesta/open_uri_redirections)
+unnecessary.
+
+In order to you use Typhoeus, first add it in your Gemfile or otherwise require it
+in your project. Then, specify it as the adapter.
+
+```ruby
+# or include in Gemfile
+require "typhoeus"
+
+# in a Rails initializer or equivalent
+MetaInspector::GETRequestAdapter = MetaInspector::Request::TyphoeusGetRequest
+
+# now this will work!
+MetaInspector.new(
+  "http://6thfloor.blogs.nytimes.com/2014/01/23/how-our-hillary-clinton-cover-came-about",
+  :allow_redirections => true
+)
+```
+
 ## ZOMG Fork! Thank you!
 
 You're welcome to fork this project and send pull requests. Just remember to include specs.

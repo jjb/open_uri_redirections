@@ -80,5 +80,27 @@ module MetaInspector
         @response.content_type
       end
     end
+
+    class TyphoeusGetRequest
+      def initialize(url, options)
+        if options.delete(:allow_redirections)
+          cookies = StringIO.new
+          options.merge!(:followlocation => true, cookiejar: cookies, cookiefile: cookies)
+        end
+        @response = Typhoeus.get(url, options)
+      end
+
+      def url
+        @response.effective_url
+      end
+
+      def body
+        @response.body
+      end
+
+      def content_type
+        @response.headers["Content-Type"].split(";")[0]
+      end
+    end
   end
 end
